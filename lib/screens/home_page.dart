@@ -9,8 +9,7 @@ import 'package:loanbee/screens/loan_eligibility_screen.dart';
 import 'package:loanbee/screens/sip_calculator_screen.dart';
 import 'package:loanbee/themes/app_theme.dart';
 import 'package:loanbee/widgets/animated_background.dart';
-import 'package:loanbee/widgets/common_widgets.dart';
-import 'package:provider/provider.dart';
+import 'package:loanbee/widgets/common_widgets.dart';import 'package:loanbee/widgets/premium_animations.dart';import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -435,7 +434,6 @@ class _AnimatedCalculatorTileState extends State<_AnimatedCalculatorTile>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
-  bool _isPressed = false;
 
   @override
   void initState() {
@@ -460,6 +458,119 @@ class _AnimatedCalculatorTileState extends State<_AnimatedCalculatorTile>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    // Front of card (normal calculator tile)
+    final frontCard = Container(
+      decoration: BoxDecoration(
+        color: isDark ? AppTheme.darkCard : Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: widget.color.withValues(alpha: 0.15),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ShimmerOverlay(
+        isDark: isDark,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: widget.color.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(widget.icon, size: 28, color: widget.color),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                widget.title,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                    ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 1),
+              Text(
+                widget.subtitle,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.color
+                          ?.withValues(alpha: 0.6),
+                      fontSize: 10,
+                    ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    // Back of card (tips/description)
+    final backCard = Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            widget.color.withValues(alpha: 0.8),
+            widget.color.withValues(alpha: 0.6),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: widget.color.withValues(alpha: 0.3),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(widget.icon, size: 32, color: Colors.white),
+            const SizedBox(height: 8),
+            Text(
+              widget.title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Tap to open',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.8),
+                fontSize: 9,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
       duration: Duration(milliseconds: 200 + (widget.index * 50)),
@@ -467,86 +578,24 @@ class _AnimatedCalculatorTileState extends State<_AnimatedCalculatorTile>
       builder: (context, value, child) {
         return Transform.scale(scale: value, child: child);
       },
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              setState(() => _isPressed = true);
-              _controller.forward().then((_) {
-                _controller.reverse();
-                widget.onTap();
-                setState(() => _isPressed = false);
-              });
-            },
-            onTapDown: (_) {
-              _controller.forward();
-            },
-            onTapUp: (_) {
-              Future.delayed(const Duration(milliseconds: 100), () {
-                if (mounted && !_isPressed) {
+      child: BreathingWidget(
+        duration: Duration(milliseconds: 2000 + (widget.index * 200)),
+        child: GlowEffect(
+          glowColor: widget.color,
+          child: ScaleTransition(
+            scale: _scaleAnimation,
+            child: FlipCard3D(
+              front: frontCard,
+              back: backCard,
+              onTap: () {
+                _controller.forward().then((_) {
                   _controller.reverse();
-                }
-              });
-            },
-            onTapCancel: () {
-              _controller.reverse();
-            },
-            borderRadius: BorderRadius.circular(20),
-            child: Container(
-              decoration: BoxDecoration(
-                color: isDark ? AppTheme.darkCard : Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: widget.color.withValues(alpha: 0.15),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: widget.color.withValues(alpha: 0.15),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(widget.icon, size: 28, color: widget.color),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      widget.title,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 1),
-                    Text(
-                      widget.subtitle,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.color?.withValues(alpha: 0.6),
-                        fontSize: 10,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
+                  widget.onTap();
+                });
+              },
+              onLongPress: () {
+                // Flip animation handled by FlipCard3D
+              },
             ),
           ),
         ),
