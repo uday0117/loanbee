@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:loanbee/controllers/theme_controller.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -30,6 +32,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _version = '1.0.0';
       });
     }
+  }
+
+  Future<void> _openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Could not open link')));
+      }
+    }
+  }
+
+  Future<void> _shareApp() async {
+    await Share.share(
+      'Check out LoanBee - Your all-in-one financial calculator app!\n\n'
+      'Calculate EMI, Loan Eligibility, SIP, FD/RD, GST, Currency Exchange, and Amortization.\n\n'
+      'Download now: https://play.google.com/store/apps/details?id=com.uksolutions.loanbee',
+      subject: 'LoanBee - Financial Calculator',
+    );
+  }
+
+  void _showRateDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Rate LoanBee'),
+        content: const Text(
+          'The app is not yet published on Play Store. '
+          'Once published, you can rate us directly from the store!',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -136,21 +179,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   context,
                   icon: Icons.privacy_tip_outlined,
                   title: 'Privacy Policy',
-                  onTap: () {},
+                  onTap: () => _openUrl(
+                    'https://uday0117.github.io/loanbee/privacy_policy.html',
+                  ),
                 ),
                 const Divider(height: 1, indent: 72),
                 _buildSettingsTile(
                   context,
                   icon: Icons.description_outlined,
                   title: 'Terms & Conditions',
-                  onTap: () {},
+                  onTap: () => _openUrl(
+                    'https://uday0117.github.io/loanbee/terms_and_conditions.html',
+                  ),
                 ),
                 const Divider(height: 1, indent: 72),
                 _buildSettingsTile(
                   context,
                   icon: Icons.share_outlined,
                   title: 'Share App',
-                  onTap: () {},
+                  onTap: _shareApp,
                 ),
                 const Divider(height: 1, indent: 72),
                 _buildSettingsTile(
@@ -158,7 +205,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Icons.star_outline,
                   title: 'Rate Us',
                   subtitle: 'On Play Store',
-                  onTap: () {},
+                  onTap: _showRateDialog,
                 ),
                 const SizedBox(height: 32),
                 Center(
