@@ -35,95 +35,87 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final themeController = Provider.of<ThemeController>(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
+      body: Column(
         children: [
-          // Profile Header
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.orange.shade100,
-                    child: Image.asset('assets/icons/app-icon.png', height: 80),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'LoanBee User',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
+          // Profile Header with Gradient
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: isDark
+                  ? const LinearGradient(
+                      colors: [Color(0xFF2C2C2C), Color(0xFF1A1A1A)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : const LinearGradient(
+                      colors: [Color(0xFFFF8C42), Color(0xFFFFD93D)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Financial Calculator Expert',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
-                  ),
-                ],
+            ),
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors.white.withValues(alpha: 0.3),
+                      child: Image.asset(
+                        'assets/icons/app-icon.png',
+                        height: 60,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'LoanBee',
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Financial Calculator',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.9),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-          const SizedBox(height: 16),
 
-          // Settings Section
-          Card(
-            child: Column(
+          // Settings List
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 16),
               children: [
-                ListTile(
-                  leading: Icon(
-                    themeController.isDarkMode
-                        ? Icons.dark_mode
-                        : Icons.light_mode,
-                    color: Colors.orange,
-                  ),
-                  title: const Text('Dark Mode'),
-                  subtitle: Text(
-                    themeController.isDarkMode ? 'Enabled' : 'Disabled',
-                  ),
+                _buildSettingsTile(
+                  context,
+                  icon: themeController.isDarkMode
+                      ? Icons.light_mode
+                      : Icons.dark_mode,
+                  title: 'Theme',
+                  subtitle: themeController.isDarkMode
+                      ? 'Dark Mode'
+                      : 'Light Mode',
                   trailing: Switch(
                     value: themeController.isDarkMode,
                     onChanged: (_) => themeController.toggleTheme(),
                   ),
                 ),
-                const Divider(height: 1),
-                ListTile(
-                  leading: const Icon(
-                    Icons.notifications_outlined,
-                    color: Colors.orange,
-                  ),
-                  title: const Text('Notifications'),
-                  subtitle: const Text('Enabled'),
-                  trailing: Switch(value: true, onChanged: (value) {}),
-                ),
-                const Divider(height: 1),
-                ListTile(
-                  leading: const Icon(Icons.language, color: Colors.orange),
-                  title: const Text('Language'),
-                  subtitle: const Text('English'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {},
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // About Section
-          Card(
-            child: Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.info_outline, color: Colors.blue),
-                  title: const Text('About LoanBee'),
-                  subtitle: Text('Version $_version'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                const Divider(height: 1, indent: 72),
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.info_outline,
+                  title: 'About',
+                  subtitle: 'Version $_version',
                   onTap: () {
                     showAboutDialog(
                       context: context,
@@ -131,106 +123,76 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       applicationVersion: _version,
                       applicationIcon: Image.asset(
                         'assets/icons/app-icon.png',
-                        height: 60,
+                        height: 50,
                       ),
-                      children: [
-                        const Text(
-                          'LoanBee is your all-in-one financial calculator app. '
-                          'Calculate EMIs, check loan eligibility, plan investments, '
-                          'and much more!',
-                        ),
+                      children: const [
+                        Text('Your all-in-one financial calculator app.'),
                       ],
                     );
                   },
                 ),
-                const Divider(height: 1),
-                ListTile(
-                  leading: const Icon(
-                    Icons.privacy_tip_outlined,
-                    color: Colors.blue,
+                const Divider(height: 1, indent: 72),
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.privacy_tip_outlined,
+                  title: 'Privacy Policy',
+                  onTap: () {},
+                ),
+                const Divider(height: 1, indent: 72),
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.description_outlined,
+                  title: 'Terms & Conditions',
+                  onTap: () {},
+                ),
+                const Divider(height: 1, indent: 72),
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.share_outlined,
+                  title: 'Share App',
+                  onTap: () {},
+                ),
+                const Divider(height: 1, indent: 72),
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.star_outline,
+                  title: 'Rate Us',
+                  subtitle: 'On Play Store',
+                  onTap: () {},
+                ),
+                const SizedBox(height: 32),
+                Center(
+                  child: Text(
+                    'Made with ❤️ by UK Solutions',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                   ),
-                  title: const Text('Privacy Policy'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {},
                 ),
-                const Divider(height: 1),
-                ListTile(
-                  leading: const Icon(
-                    Icons.description_outlined,
-                    color: Colors.blue,
-                  ),
-                  title: const Text('Terms & Conditions'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {},
-                ),
-                const Divider(height: 1),
-                ListTile(
-                  leading: const Icon(Icons.share_outlined, color: Colors.blue),
-                  title: const Text('Share App'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {},
-                ),
+                const SizedBox(height: 16),
               ],
             ),
           ),
-          const SizedBox(height: 16),
-
-          // Support Section
-          Card(
-            child: Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.help_outline, color: Colors.green),
-                  title: const Text('Help & Support'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {},
-                ),
-                const Divider(height: 1),
-                ListTile(
-                  leading: const Icon(Icons.star_outline, color: Colors.green),
-                  title: const Text('Rate Us'),
-                  subtitle: const Text('Love LoanBee? Rate us on Play Store'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {},
-                ),
-                const Divider(height: 1),
-                ListTile(
-                  leading: const Icon(
-                    Icons.bug_report_outlined,
-                    color: Colors.green,
-                  ),
-                  title: const Text('Report an Issue'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {},
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 32),
-
-          // Footer
-          Center(
-            child: Column(
-              children: [
-                Text(
-                  'Made with ❤️ by UK Solutions',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '© 2026 LoanBee. All rights reserved.',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: Colors.grey[500]),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
         ],
       ),
+    );
+  }
+
+  Widget _buildSettingsTile(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    Widget? trailing,
+    VoidCallback? onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: const Color(0xFFFF8C42)),
+      title: Text(title),
+      subtitle: subtitle != null ? Text(subtitle) : null,
+      trailing: trailing ?? const Icon(Icons.chevron_right, size: 20),
+      onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
     );
   }
 }
