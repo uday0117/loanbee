@@ -8,9 +8,9 @@ import 'package:loanbee/screens/gst_calculator_screen.dart';
 import 'package:loanbee/screens/loan_eligibility_screen.dart';
 import 'package:loanbee/screens/sip_calculator_screen.dart';
 import 'package:loanbee/themes/app_theme.dart';
+import 'package:loanbee/widgets/animated_background.dart';
 import 'package:loanbee/widgets/common_widgets.dart';
 import 'package:provider/provider.dart';
-import 'dart:math' as math;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,7 +19,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   final List<String> _financialTips = [
     "💡 Start an emergency fund with 3-6 months of expenses",
     "📊 Diversify your investments to minimize risk",
@@ -48,7 +49,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       curve: Curves.easeInOut,
     );
     _tipAnimationController.forward();
-    
+
     // Rotate tips every 5 seconds
     Future.delayed(const Duration(seconds: 5), _rotateTip);
   }
@@ -72,56 +73,56 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 
   List<_CalculatorItem> get _allCalculators => [
-        _CalculatorItem(
-          icon: Icons.calculate_rounded,
-          title: 'EMI Calculator',
-          subtitle: 'Monthly loan payments',
-          color: const Color(0xFFFF8C42),
-          screen: const EMICalculatorScreen(),
-        ),
-        _CalculatorItem(
-          icon: Icons.check_circle_outline_rounded,
-          title: 'Loan Eligibility',
-          subtitle: 'Check eligibility',
-          color: const Color(0xFF4CAF50),
-          screen: const LoanEligibilityScreen(),
-        ),
-        _CalculatorItem(
-          icon: Icons.trending_up_rounded,
-          title: 'SIP Calculator',
-          subtitle: 'Mutual fund plans',
-          color: const Color(0xFF2196F3),
-          screen: const SIPCalculatorScreen(),
-        ),
-        _CalculatorItem(
-          icon: Icons.account_balance_rounded,
-          title: 'FD/RD Calculator',
-          subtitle: 'Fixed deposits',
-          color: const Color(0xFF9C27B0),
-          screen: const FDRDCalculatorScreen(),
-        ),
-        _CalculatorItem(
-          icon: Icons.receipt_long_rounded,
-          title: 'GST Calculator',
-          subtitle: 'Tax calculations',
-          color: const Color(0xFFF44336),
-          screen: const GSTCalculatorScreen(),
-        ),
-        _CalculatorItem(
-          icon: Icons.currency_exchange_rounded,
-          title: 'Currency Converter',
-          subtitle: 'Exchange rates',
-          color: const Color(0xFF009688),
-          screen: const CurrencyConverterScreen(),
-        ),
-        _CalculatorItem(
-          icon: Icons.table_chart_rounded,
-          title: 'Amortization',
-          subtitle: 'Payment schedule',
-          color: const Color(0xFF3F51B5),
-          screen: const AmortizationScreen(),
-        ),
-      ];
+    _CalculatorItem(
+      icon: Icons.calculate_rounded,
+      title: 'EMI Calculator',
+      subtitle: 'Monthly loan payments',
+      color: const Color(0xFFFF8C42),
+      screen: const EMICalculatorScreen(),
+    ),
+    _CalculatorItem(
+      icon: Icons.check_circle_outline_rounded,
+      title: 'Loan Eligibility',
+      subtitle: 'Check eligibility',
+      color: const Color(0xFF4CAF50),
+      screen: const LoanEligibilityScreen(),
+    ),
+    _CalculatorItem(
+      icon: Icons.trending_up_rounded,
+      title: 'SIP Calculator',
+      subtitle: 'Mutual fund plans',
+      color: const Color(0xFF2196F3),
+      screen: const SIPCalculatorScreen(),
+    ),
+    _CalculatorItem(
+      icon: Icons.account_balance_rounded,
+      title: 'FD/RD Calculator',
+      subtitle: 'Fixed deposits',
+      color: const Color(0xFF9C27B0),
+      screen: const FDRDCalculatorScreen(),
+    ),
+    _CalculatorItem(
+      icon: Icons.receipt_long_rounded,
+      title: 'GST Calculator',
+      subtitle: 'Tax calculations',
+      color: const Color(0xFFF44336),
+      screen: const GSTCalculatorScreen(),
+    ),
+    _CalculatorItem(
+      icon: Icons.currency_exchange_rounded,
+      title: 'Currency Converter',
+      subtitle: 'Exchange rates',
+      color: const Color(0xFF009688),
+      screen: const CurrencyConverterScreen(),
+    ),
+    _CalculatorItem(
+      icon: Icons.table_chart_rounded,
+      title: 'Amortization',
+      subtitle: 'Payment schedule',
+      color: const Color(0xFF3F51B5),
+      screen: const AmortizationScreen(),
+    ),
+  ];
 
   List<_CalculatorItem> get _filteredCalculators {
     if (_searchQuery.isEmpty) return _allCalculators;
@@ -137,228 +138,256 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: isDark ? AppTheme.darkGradient : AppTheme.primaryGradient,
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              // Header with Search
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
+      body: Stack(
+        children: [
+          // Animated gradient background
+          AnimatedGradientBackground(isDark: isDark, child: Container()),
+          // Floating particles
+          Positioned.fill(child: FloatingParticles(isDark: isDark)),
+          // Main content
+          SafeArea(
+            child: Column(
+              children: [
+                // Header with Search and Wave overlay
+                Stack(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Image.asset(
-                                'assets/icons/app-icon.png',
-                                height: 36,
-                                width: 36,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              'LoanBee',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: IconButton(
-                            icon: Icon(
-                              themeController.isDarkMode
-                                  ? Icons.light_mode_rounded
-                                  : Icons.dark_mode_rounded,
-                              color: Colors.white,
-                            ),
-                            onPressed: () => themeController.toggleTheme(),
-                          ),
-                        ),
-                      ],
+                    // Wave pattern at bottom of header
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      height: 60,
+                      child: WavePattern(isDark: isDark),
                     ),
-                    const SizedBox(height: 16),
-                    // Search Bar
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: TextField(
-                        onChanged: (value) {
-                          setState(() {
-                            _searchQuery = value;
-                          });
-                        },
-                        style: const TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          hintText: 'Search calculators...',
-                          hintStyle: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.6),
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.search,
-                            color: Colors.white,
-                          ),
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 14,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Calculator Grid with Tip
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(30),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      // Financial Tip Banner
-                      FadeTransition(
-                        opacity: _tipAnimation,
-                        child: Container(
-                          margin: const EdgeInsets.all(16),
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: isDark
-                                  ? [
-                                      AppTheme.darkCard,
-                                      AppTheme.darkCard.withValues(alpha: 0.8)
-                                    ]
-                                  : [
-                                      AppTheme.primaryOrange.withValues(alpha: 0.1),
-                                      AppTheme.primaryYellow.withValues(alpha: 0.1)
-                                    ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: isDark
-                                  ? AppTheme.primaryOrange.withValues(alpha: 0.3)
-                                  : AppTheme.primaryOrange.withValues(alpha: 0.2),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Row(
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: AppTheme.primaryOrange
-                                      .withValues(alpha: 0.2),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.lightbulb_outline,
-                                  color: AppTheme.primaryOrange,
-                                  size: 20,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  _financialTips[_currentTipIndex],
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.w500,
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.2,
                                       ),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Image.asset(
+                                      'assets/icons/app-icon.png',
+                                      height: 36,
+                                      width: 36,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    'LoanBee',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall
+                                        ?.copyWith(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: IconButton(
+                                  icon: Icon(
+                                    themeController.isDarkMode
+                                        ? Icons.light_mode_rounded
+                                        : Icons.dark_mode_rounded,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () =>
+                                      themeController.toggleTheme(),
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ),
-
-                      // Calculator Grid
-                      Expanded(
-                        child: _filteredCalculators.isEmpty
-                            ? Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.search_off,
-                                      size: 64,
-                                      color: Colors.grey.withValues(alpha: 0.5),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      'No calculators found',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
-                                            color: Colors.grey,
-                                          ),
-                                    ),
-                                  ],
+                          const SizedBox(height: 16),
+                          // Search Bar
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: TextField(
+                              onChanged: (value) {
+                                setState(() {
+                                  _searchQuery = value;
+                                });
+                              },
+                              style: const TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                hintText: 'Search calculators...',
+                                hintStyle: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.6),
                                 ),
-                              )
-                            : GridView.builder(
-                                padding: const EdgeInsets.all(16),
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 10,
-                                  childAspectRatio: 0.85,
+                                prefixIcon: const Icon(
+                                  Icons.search,
+                                  color: Colors.white,
                                 ),
-                                itemCount: _filteredCalculators.length,
-                                itemBuilder: (context, index) {
-                                  final calc = _filteredCalculators[index];
-                                  return _AnimatedCalculatorTile(
-                                    index: index,
-                                    icon: calc.icon,
-                                    title: calc.title,
-                                    subtitle: calc.subtitle,
-                                    color: calc.color,
-                                    onTap: () => Navigator.of(context).push(
-                                      SlidePageRoute(page: calc.screen),
-                                    ),
-                                  );
-                                },
+                                border: InputBorder.none,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 14,
+                                ),
                               ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
+                  ],
+                ),
+
+                // Calculator Grid with Tip
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(30),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        // Financial Tip Banner
+                        FadeTransition(
+                          opacity: _tipAnimation,
+                          child: Container(
+                            margin: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: isDark
+                                    ? [
+                                        AppTheme.darkCard,
+                                        AppTheme.darkCard.withValues(
+                                          alpha: 0.8,
+                                        ),
+                                      ]
+                                    : [
+                                        AppTheme.primaryOrange.withValues(
+                                          alpha: 0.1,
+                                        ),
+                                        AppTheme.primaryYellow.withValues(
+                                          alpha: 0.1,
+                                        ),
+                                      ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: isDark
+                                    ? AppTheme.primaryOrange.withValues(
+                                        alpha: 0.3,
+                                      )
+                                    : AppTheme.primaryOrange.withValues(
+                                        alpha: 0.2,
+                                      ),
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: AppTheme.primaryOrange.withValues(
+                                      alpha: 0.2,
+                                    ),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.lightbulb_outline,
+                                    color: AppTheme.primaryOrange,
+                                    size: 20,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _financialTips[_currentTipIndex],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // Calculator Grid
+                        Expanded(
+                          child: _filteredCalculators.isEmpty
+                              ? Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.search_off,
+                                        size: 64,
+                                        color: Colors.grey.withValues(
+                                          alpha: 0.5,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        'No calculators found',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium
+                                            ?.copyWith(color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : GridView.builder(
+                                  padding: const EdgeInsets.all(16),
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        crossAxisSpacing: 10,
+                                        mainAxisSpacing: 10,
+                                        childAspectRatio: 0.85,
+                                      ),
+                                  itemCount: _filteredCalculators.length,
+                                  itemBuilder: (context, index) {
+                                    final calc = _filteredCalculators[index];
+                                    return _AnimatedCalculatorTile(
+                                      index: index,
+                                      icon: calc.icon,
+                                      title: calc.title,
+                                      subtitle: calc.subtitle,
+                                      color: calc.color,
+                                      onTap: () => Navigator.of(
+                                        context,
+                                      ).push(SlidePageRoute(page: calc.screen)),
+                                    );
+                                  },
+                                ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -415,9 +444,10 @@ class _AnimatedCalculatorTileState extends State<_AnimatedCalculatorTile>
       duration: const Duration(milliseconds: 150),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.92).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.92,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -435,10 +465,7 @@ class _AnimatedCalculatorTileState extends State<_AnimatedCalculatorTile>
       duration: Duration(milliseconds: 200 + (widget.index * 50)),
       curve: Curves.easeOutBack,
       builder: (context, value, child) {
-        return Transform.scale(
-          scale: value,
-          child: child,
-        );
+        return Transform.scale(scale: value, child: child);
       },
       child: ScaleTransition(
         scale: _scaleAnimation,
@@ -498,9 +525,9 @@ class _AnimatedCalculatorTileState extends State<_AnimatedCalculatorTile>
                       widget.title,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
-                          ),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -509,13 +536,11 @@ class _AnimatedCalculatorTileState extends State<_AnimatedCalculatorTile>
                       widget.subtitle,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.color
-                                ?.withValues(alpha: 0.6),
-                            fontSize: 10,
-                          ),
+                        color: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                        fontSize: 10,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
