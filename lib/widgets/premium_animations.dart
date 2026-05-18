@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
 
 /// 3D Flip Card Animation for Calculator Cards
 class FlipCard3D extends StatefulWidget {
@@ -192,11 +193,7 @@ class ShimmerOverlay extends StatefulWidget {
   final Widget child;
   final bool isDark;
 
-  const ShimmerOverlay({
-    super.key,
-    required this.child,
-    required this.isDark,
-  });
+  const ShimmerOverlay({super.key, required this.child, required this.isDark});
 
   @override
   State<ShimmerOverlay> createState() => _ShimmerOverlayState();
@@ -276,14 +273,13 @@ class _BreathingWidgetState extends State<BreathingWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    )..repeat(reverse: true);
+    _controller = AnimationController(duration: widget.duration, vsync: this)
+      ..repeat(reverse: true);
 
-    _animation = Tween<double>(begin: 0.98, end: 1.02).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _animation = Tween<double>(
+      begin: 0.98,
+      end: 1.02,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -297,10 +293,7 @@ class _BreathingWidgetState extends State<BreathingWidget>
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
-        return Transform.scale(
-          scale: _animation.value,
-          child: widget.child,
-        );
+        return Transform.scale(scale: _animation.value, child: widget.child);
       },
     );
   }
@@ -311,11 +304,7 @@ class ParallaxContainer extends StatefulWidget {
   final Widget child;
   final double depth;
 
-  const ParallaxContainer({
-    super.key,
-    required this.child,
-    this.depth = 20.0,
-  });
+  const ParallaxContainer({super.key, required this.child, this.depth = 20.0});
 
   @override
   State<ParallaxContainer> createState() => _ParallaxContainerState();
@@ -349,10 +338,7 @@ class _ParallaxContainerState extends State<ParallaxContainer> {
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOut,
         builder: (context, offset, child) {
-          return Transform.translate(
-            offset: offset,
-            child: widget.child,
-          );
+          return Transform.translate(offset: offset, child: widget.child);
         },
       ),
     );
@@ -364,11 +350,7 @@ class GlowEffect extends StatefulWidget {
   final Widget child;
   final Color glowColor;
 
-  const GlowEffect({
-    super.key,
-    required this.child,
-    required this.glowColor,
-  });
+  const GlowEffect({super.key, required this.child, required this.glowColor});
 
   @override
   State<GlowEffect> createState() => _GlowEffectState();
@@ -387,9 +369,10 @@ class _GlowEffectState extends State<GlowEffect>
       vsync: this,
     )..repeat(reverse: true);
 
-    _animation = Tween<double>(begin: 0.5, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _animation = Tween<double>(
+      begin: 0.5,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
