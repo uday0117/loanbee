@@ -21,3 +21,7 @@
 # Preserve line numbers for better debugging
 -keepattributes SourceFile,LineNumberTable
 -renamesourcefileattribute SourceFile
+
+# Google Play Core library rules
+-keep class com.google.android.play.core.** { *; }
+-dontwarn com.google.android.play.core.**

@@ -463,23 +463,7 @@ class _AnimatedCalculatorTileState extends State<_AnimatedCalculatorTile>
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          _controller.forward().then((_) {
-            _controller.reverse();
-            widget.onTap();
-          });
-        },
-        onTapDown: (_) {
-          _controller.forward();
-        },
-        onTapUp: (_) {
-          Future.delayed(const Duration(milliseconds: 100), () {
-            if (mounted) {
-              _controller.reverse();
-            }
-          });
-        },
-        onTapCancel: () {
-          _controller.reverse();
+          widget.onTap();
         },
         borderRadius: BorderRadius.circular(20),
         child: ScaleTransition(
